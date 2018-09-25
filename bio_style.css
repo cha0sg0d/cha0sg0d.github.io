@@ -9,3 +9,8 @@ body {
 h1 {
 	text-align: center;
 }
+
+#info {
+	/* Top, right, bottom left */
+    padding: 25px 200px 25px 200px;
+}
