@@ -1,3 +1,4 @@
+/* This file has 5 CSS rules */
 body {
 	background-color: #E6E6FA;
 	color: black;
@@ -21,7 +22,7 @@ h3 {
 	text-decoration: underline;
 }
 
-#plz {
+#test {
 	color: blue;
 	font-size: 20px;
 }
