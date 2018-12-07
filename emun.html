@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Emun</title>
+	<link rel="stylesheet" href="emun.css" type="text/css" />
+
+</head>
+<body>
+
+<button onclick="myFunction()">Prom with Tony?</button>
+<p id="demo"></p>
+<img src="hotdog.jpg" id="tony"> <img src="emun.jpg" height="auto" width="25%"id="emun">
+
+
+
+<script>
+function myFunction() {
+  var elem = document.getElementById('tony');
+    elem.parentNode.removeChild(elem);
+
+   elem = document.getElementById('emun');
+      elem.parentNode.removeChild(elem);
+
+
+  document.getElementById("demo").innerHTML = '<video class="videoPlayer" src="Emun.mp4" autoplay loop muted></video>'
+}
+</script>
+
+
+</body>
+</html>
