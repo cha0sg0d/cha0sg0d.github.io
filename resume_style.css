@@ -9,6 +9,13 @@ body {
 	padding: 3em;
 }
 
+iframe { 
+width: 100%; 
+height: 1000px; 
+}
+
+
+
 h1 {
 	text-align: center;
 }
