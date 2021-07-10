@@ -9,6 +9,7 @@ const nunjucks = require('nunjucks');
 
 // Store a reference to the source directory.
 const postsDirPath = path.resolve(__dirname, 'posts');
+const projectsDirPath = path.resolve(__dirname, 'projects');
 // Store a reference path to the destination directory.
 const publicDirPath = path.resolve(__dirname, 'public');
 
@@ -123,7 +124,7 @@ const createPostFile = async post => {
 /**
  * createIndexFile generates an index file with a list of blog posts.
  */
-const createIndexFile = async posts => {
+const createIndexFile = async (posts) => {
   // Use the template engine to generate the file content.
   const fileData = nunjucks.render(getTemplatePath('index'), { posts });
   // Create a file path in the destination directory.
@@ -142,7 +143,7 @@ const build = async () => {
 
   // Get all the Markdown files in the posts directory.
   const posts = await getPosts(postsDirPath);
-
+  const projects = await getPosts(projectsDirPath);
   // Generate pages for all posts that are public.
   const postsToCreate = posts
     .filter(post => Boolean(post.public))
