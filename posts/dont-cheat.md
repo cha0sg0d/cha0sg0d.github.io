@@ -1,7 +1,7 @@
 ---
 title: "Resisting the urge to cheat"
 description: "How I built this website"
-date: "2017-07-11"
+date: "2021-07-11"
 public: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: "Why this blog > my CS degree"
-description: "Why / how I made this blog"
+description: "Why I made this blog"
 date: "2021-07-10"
 public: true
 ---
