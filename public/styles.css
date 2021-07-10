@@ -4,9 +4,12 @@ body {
 }
 
 h1 {
-  font-size: 4em;
+  font-size: 2em;
 }
 
+section {
+  font-size: 1.5em;
+}
 .navbar {
   width: 100%;
   overflow: hidden;
