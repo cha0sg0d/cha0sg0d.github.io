@@ -1,0 +1,32 @@
+body {
+  padding: 2% 25% 10% 25%;
+  font-size: 62.5%; /*sets 1em to 10px for convinience*/
+}
+.navbar {
+  width: 100%;
+  overflow: auto;
+  font-size: 3em;
+}
+
+.navbar a {
+  color: black;
+}
+.navbar a:hover {
+  color: purple; /* Black text color */
+  /* background-color: #ddd; /* Grey background color */ */
+}
+
+.navbar a.right {
+  float: right; /* Float a link to the right */
+  padding-right: 2%;
+  padding-top: 2%;
+}
+
+.navbar img {
+  height: 2em;
+  width: 2em;
+}
+
+.blog {
+  font-size: 2em;
+}
