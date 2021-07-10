@@ -2,6 +2,11 @@ body {
   padding: 2% 25% 10% 25%;
   font-size: 62.5%; /*sets 1em to 10px for convinience*/
 }
+
+h1 {
+  font-size: 4em;
+}
+
 .navbar {
   width: 100%;
   overflow: hidden;
@@ -33,8 +38,4 @@ body {
 
 .title {
   font-size: 2em;
-}
-
-h1 {
-  font-size: 3em;
 }
