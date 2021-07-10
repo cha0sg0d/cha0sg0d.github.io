@@ -9,7 +9,9 @@ const nunjucks = require('nunjucks');
 
 // Store a reference to the source directory.
 const postsDirPath = path.resolve(__dirname, 'posts');
-const staticDirPath = path.resolve(__dirname, 'static');
+// Reference to static directory (templates)
+const staticFileDir = path.resolve(__dirname, 'static');
+const staticFiles = ['projects','rss'];
 // Store a reference path to the destination directory.
 const publicDirPath = path.resolve(__dirname, 'public');
 
@@ -35,8 +37,9 @@ const getFiles = async (dirPath, fileExt = '') => {
 };
 
 // Write a file from template
-const writeFileFromTemplate = async (filename, publicDirPath) => {
-  const fileData = nunjucks.render(getTemplatePath(filename))
+const writeFileFromTemplate = async (dirName, filename, publicDirPath) => {
+  console.log(`template path ${getTemplatePath(dirName, filename)}`)
+  const fileData = nunjucks.render(getTemplatePath(dirName, filename))
   const outputFilePath = path.resolve(publicDirPath, `${filename}.html`);
   await fs.writeFile(outputFilePath, fileData, 'utf-8');
 };
@@ -101,8 +104,11 @@ const markdownToHTML = text =>
   );
 
 // getTemplatePath creates a file path to an HTML template file.
-const getTemplatePath = name =>
-  path.resolve(__dirname, 'templates', path.format({ name, ext: '.njk' }));
+const getTemplatePath = (dirName, fileName) => {
+  console.log(`dir ${dirName} file ${fileName}`)
+  console.log(`res ${path.resolve(__dirname, dirName, path.format({ name: fileName, ext: '.njk' }))}`)
+  return path.resolve(__dirname, dirName, path.format({ name: fileName, ext: '.njk' }));
+}
 
 /**
  * createPostFile generates a new HTML page from a template and saves the file.
@@ -110,7 +116,7 @@ const getTemplatePath = name =>
  */
 const createPostFile = async post => {
   // Use the template engine to generate the file content.
-  const fileData = nunjucks.render(getTemplatePath('post'), {
+  const fileData = nunjucks.render(getTemplatePath('templates', 'post'), {
     ...post,
     // Convert Markdown to HTML.
     body: await markdownToHTML(post.body)
@@ -132,7 +138,7 @@ const createPostFile = async post => {
  */
 const createIndexFile = async (posts) => {
   // Use the template engine to generate the file content.
-  const fileData = nunjucks.render(getTemplatePath('index'), { posts });
+  const fileData = nunjucks.render(getTemplatePath('templates','index'), { posts });
   // Create a file path in the destination directory.
   const filePath = path.resolve(publicDirPath, 'index.html');
 
@@ -143,11 +149,14 @@ const createIndexFile = async (posts) => {
 /**
 * buildStatic injects a template body into the base .njk and outputs to file
 */
-const buildStatic = async (inputPath, outputPath) => {
-  const fileNames = await getFiles(inputPath, '.html');
-  for (let src of fileNames) {
-    const fileSlug = src.slice(0,-5)
-    await writeFileFromTemplate(fileSlug, outputPath);
+const buildStatic = async (staticFiles, outputPath) => {
+  // console.log(`in ${staticFileDir} out ${outputPath}`)
+  // const fileNames = await getFiles(staticFileDir, '.njk');
+  for (let s of staticFiles) {
+    // const fileSlug = s.slice(0,-4);
+    // console.log(`slug ${s} ${fileSlug}`)
+    await writeFileFromTemplate('templates', s, outputPath);
+    console.log(`wrote ${s} to folder`)
   }
 }
 // build runs the static site generator.
@@ -157,7 +166,7 @@ const build = async () => {
   // Delete any previously-generated HTML files in the public directory.
   await removeFiles(publicDirPath, '.html');
 
-  await buildStatic(staticDirPath, publicDirPath);
+  await buildStatic(staticFiles, publicDirPath);
   // Get all the Markdown files in the posts directory.
   const posts = await getPosts(postsDirPath);
   // const projects = await getPosts(projectsDirPath);
