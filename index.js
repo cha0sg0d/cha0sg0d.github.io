@@ -34,7 +34,7 @@ const getFiles = async (dirPath, fileExt = '') => {
   );
 };
 
-// Create a list of files to read.
+// Write a file from template
 const writeFileFromTemplate = async (filename, publicDirPath) => {
   const fileData = nunjucks.render(getTemplatePath(filename))
   const outputFilePath = path.resolve(publicDirPath, `${filename}.html`);
@@ -141,14 +141,13 @@ const createIndexFile = async (posts) => {
 };
 
 /**
-* buildStatic simply copies files from static folder to public
+* buildStatic injects a template body into the base .njk and outputs to file
 */
 const buildStatic = async (inputPath, outputPath) => {
   const fileNames = await getFiles(inputPath, '.html');
   for (let src of fileNames) {
-    const inputFilePath = path.resolve(inputPath, src);
-    const outputFilePath = path.resolve(outputPath, src);
-    const res = await fs.copyFile(inputFilePath, outputFilePath);
+    const fileSlug = src.slice(0,-5)
+    await writeFileFromTemplate(fileSlug, outputPath);
   }
 }
 // build runs the static site generator.
@@ -158,7 +157,7 @@ const build = async () => {
   // Delete any previously-generated HTML files in the public directory.
   await removeFiles(publicDirPath, '.html');
 
-  await writeFileFromTemplate('projects',publicDirPath);
+  await buildStatic(staticDirPath, publicDirPath);
   // Get all the Markdown files in the posts directory.
   const posts = await getPosts(postsDirPath);
   // const projects = await getPosts(projectsDirPath);
