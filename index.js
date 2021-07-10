@@ -9,7 +9,7 @@ const nunjucks = require('nunjucks');
 
 // Store a reference to the source directory.
 const postsDirPath = path.resolve(__dirname, 'posts');
-const projectsDirPath = path.resolve(__dirname, 'projects');
+const staticDirPath = path.resolve(__dirname, 'static');
 // Store a reference path to the destination directory.
 const publicDirPath = path.resolve(__dirname, 'public');
 
@@ -32,6 +32,13 @@ const getFiles = async (dirPath, fileExt = '') => {
       // Return a list of file names.
       .map(dirent => dirent.name)
   );
+};
+
+// Create a list of files to read.
+const writeFileFromTemplate = async (filename, publicDirPath) => {
+  const fileData = nunjucks.render(getTemplatePath(filename))
+  const outputFilePath = path.resolve(publicDirPath, `${filename}.html`);
+  await fs.writeFile(outputFilePath, fileData, 'utf-8');
 };
 
 // removeFiles deletes all files in a directory that match a file extension.
@@ -69,12 +76,11 @@ const getPosts = async dirPath => {
   const fileNames = await getFiles(dirPath, '.md');
 
   // Create a list of files to read.
-  const filesToRead = fileNames.map(fileName =>
-    fs.readFile(path.resolve(dirPath, fileName), 'utf-8')
-  );
+  const filesRead = fileNames.map(fileName =>
+    fs.readFile(path.resolve(dirPath, fileName), 'utf-8'))
 
   // Asynchronously read all the file contents.
-  const fileData = await Promise.all(filesToRead);
+  const fileData = await Promise.all(filesRead);
 
   return fileNames.map((fileName, i) => parsePost(fileName, fileData[i]));
 };
@@ -134,6 +140,17 @@ const createIndexFile = async (posts) => {
   await fs.writeFile(filePath, fileData, 'utf-8');
 };
 
+/**
+* buildStatic simply copies files from static folder to public
+*/
+const buildStatic = async (inputPath, outputPath) => {
+  const fileNames = await getFiles(inputPath, '.html');
+  for (let src of fileNames) {
+    const inputFilePath = path.resolve(inputPath, src);
+    const outputFilePath = path.resolve(outputPath, src);
+    const res = await fs.copyFile(inputFilePath, outputFilePath);
+  }
+}
 // build runs the static site generator.
 const build = async () => {
   // Ensure the public directory exists.
@@ -141,9 +158,10 @@ const build = async () => {
   // Delete any previously-generated HTML files in the public directory.
   await removeFiles(publicDirPath, '.html');
 
+  await writeFileFromTemplate('projects',publicDirPath);
   // Get all the Markdown files in the posts directory.
   const posts = await getPosts(postsDirPath);
-  const projects = await getPosts(projectsDirPath);
+  // const projects = await getPosts(projectsDirPath);
   // Generate pages for all posts that are public.
   const postsToCreate = posts
     .filter(post => Boolean(post.public))
