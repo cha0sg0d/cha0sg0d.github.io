@@ -9,6 +9,7 @@ const nunjucks = require('nunjucks');
 
 // Store a reference to the source directory.
 const postsDirPath = path.resolve(__dirname, 'posts');
+const publicPostsDirPath = path.resolve(__dirname, 'public/posts');
 // Reference to static directory (templates)
 const staticFileDir = path.resolve(__dirname, 'static');
 const staticFiles = ['projects','rss'];
@@ -114,7 +115,7 @@ const getTemplatePath = (dirName, fileName) => {
  * createPostFile generates a new HTML page from a template and saves the file.
  * It also converts the post body from Markdown to HTML.
  */
-const createPostFile = async post => {
+const createPostFile = async (post, dirName) => {
   // Use the template engine to generate the file content.
   const fileData = nunjucks.render(getTemplatePath('templates', 'post'), {
     ...post,
@@ -125,7 +126,7 @@ const createPostFile = async post => {
   // Combine the slug and file extension to create a file name.
   const fileName = path.format({ name: post.slug, ext: '.html' });
   // Create a file path in the destination directory.
-  const filePath = path.resolve(publicDirPath, fileName);
+  const filePath = path.resolve(dirName, fileName);
 
   // Save the file in the desired location.
   await fs.writeFile(filePath, fileData, 'utf-8');
@@ -173,7 +174,7 @@ const build = async () => {
   // Generate pages for all posts that are public.
   const postsToCreate = posts
     .filter(post => Boolean(post.public))
-    .map(post => createPostFile(post));
+    .map(post => createPostFile(post, publicPostsDirPath));
 
   const createdPosts = await Promise.all(postsToCreate);
 

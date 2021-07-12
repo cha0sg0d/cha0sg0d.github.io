@@ -20,9 +20,15 @@ The self hosted instance comes in a [Docker](docker) image. This image runs in a
 
 | Service        | Pros           | Cons     |
 | :------------- | :------------- | :------------- |
-| Heroku       | totally free       | need to write custom Dockerfiles and use Heroku's custom `heroku.yml`       |
+| Heroku       | totally free. Learn more about Docker       | need to write custom Dockerfiles and use Heroku's custom `heroku.yml`       |
 | Amazon Web Services       | free tier, good docs       | more infrastructure than I need for a simple deployment. Also potentially more $$       |
 | Digital Ocean       |   simpler than AWS    | $5/month        |
 | localhost       | It works       | I don't want to spend CPU / battery running Docker all the time       |
 
-###
+### Attempt #1: AWS
+>  Run Docker on AWS:
+
+> AWS provides support for both Docker open-source and commercial solutions. There are a number of ways to run containers on AWS, including Amazon Elastic Container Service (ECS) is a highly scalable, high performance container management service. Customers can easily deploy their containerized applications from their local Docker environment straight to Amazon ECS. AWS Fargate is a technology for Amazon ECS that lets you run containers in production without deploying or managing infrastructure.
+
+1. Follow tutorial: [Getting started with Docker](https://aws.amazon.com/blogs/containers/deploy-applications-on-amazon-ecs-using-docker-compose/)
+  1.
