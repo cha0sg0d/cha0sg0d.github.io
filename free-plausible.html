@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta description="Self hosting plausible analytics">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>toe knee</title>
+    <link rel="shortcut icon" href="planet.png">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/modern-normalize/0.5.0/modern-normalize.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    
+  </head>
+  <body>
+    <div class="navbar">
+  <a href="/"> <img src="planet.png" alt="cha0splanet" width="16" height="16"></a>
+  <a href="/rss.html" class="right"><i class="fa fa-rss"></i></a>
+  <a href="https://twitter.com/cha0sg0d11" target="_blank" class="right"><i class="fa fa-twitter"></i></a>
+  <a href="https://github.com/cha0sg0d" target="_blank" class="right"><i class="fa fa-github"></i></a>
+  <a href="/projects.html" class="right"> <i class="fa fa-laptop"></i></a>
+</div>
+
+    
+  <article class="blog">
+    <header>
+      <h1>Cheap analytics</h1>
+    </header>
+    <div class="markdown-body">
+      <h3 id="the-dilemma">The dilemma</h3>
+<p>Pay $6/month or self host Plausible Analytics in the cloud. One is relatively cheap, fast to deploy, and guaranteed to work. The other is tricky, technical, and might end up costing more in the long run.</p>
+<p>However, as I <a href="../public/hello-world.html">mentioned</a> in my first post, I want to learn for understanding, not speed. So this is my journey of self-hosting Plausible Analytics:</p>
+<h3 id="background">Background</h3>
+<p><a href="plausible">Plausible Analytics</a> is a lightweight, open source analytics platform for basic website data. They allow self-hosting and have a bunch of <a href="reasons">reasons</a> why they're better than Google Analytics.</p>
+<p>The self hosted instance comes in a <a href="docker">Docker</a> image. This image runs in a container built with <a href="compose">Docker Compose</a>, which can run multiple sub-images within the main container.</p>
+<h3 id="self-hosting-options">Self hosting options</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Service</th>
+<th align="left">Pros</th>
+<th align="left">Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Heroku</td>
+<td align="left">totally free</td>
+<td align="left">need to write custom Dockerfiles and use Heroku's custom <code>heroku.yml</code></td>
+</tr>
+<tr>
+<td align="left">Amazon Web Services</td>
+<td align="left">free tier, good docs</td>
+<td align="left">more infrastructure than I need for a simple deployment. Also potentially more $$</td>
+</tr>
+<tr>
+<td align="left">Digital Ocean</td>
+<td align="left">simpler than AWS</td>
+<td align="left">$5/month</td>
+</tr>
+<tr>
+<td align="left">localhost</td>
+<td align="left">It works</td>
+<td align="left">I don't want to spend CPU / battery running Docker all the time</td>
+</tr>
+</tbody>
+</table>
+<h3 id=""></h3>
+
+    </div>
+  </article>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+  <script>window.hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>
