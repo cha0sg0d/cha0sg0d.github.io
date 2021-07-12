@@ -9,7 +9,7 @@ public: true
 
 Pay $6/month or self host Plausible Analytics in the cloud. One is relatively cheap, fast to deploy, and guaranteed to work. The other is tricky, technical, and might end up costing more in the long run.
 
-However, as I [mentioned](../public/hello-world.html) in my first post, I want to learn for understanding, not speed. So this is my journey of self-hosting Plausible Analytics:
+However, as I [mentioned](hello-world.html) in my first post, I want to learn for understanding, not speed. So this is my journey of self-hosting Plausible Analytics:
 
 ### Background
 [Plausible Analytics](plausible) is a lightweight, open source analytics platform for basic website data. They allow self-hosting and have a bunch of [reasons](reasons) why they're better than Google Analytics.
@@ -25,4 +25,4 @@ The self hosted instance comes in a [Docker](docker) image. This image runs in a
 | Digital Ocean       |   simpler than AWS    | $5/month        |
 | localhost       | It works       | I don't want to spend CPU / battery running Docker all the time       |
 
-### 
+###
