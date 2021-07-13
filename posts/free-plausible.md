@@ -26,9 +26,15 @@ The self hosted instance comes in a [Docker](docker) image. This image runs in a
 | localhost       | It works       | I don't want to spend CPU / battery running Docker all the time       |
 
 ### Attempt #1: AWS
->  Run Docker on AWS:
 
-> AWS provides support for both Docker open-source and commercial solutions. There are a number of ways to run containers on AWS, including Amazon Elastic Container Service (ECS) is a highly scalable, high performance container management service. Customers can easily deploy their containerized applications from their local Docker environment straight to Amazon ECS. AWS Fargate is a technology for Amazon ECS that lets you run containers in production without deploying or managing infrastructure.
+1. Follow tutorial: [AWS how to Docker](https://aws.amazon.com/blogs/containers/deploy-applications-on-amazon-ecs-using-docker-compose/)
+  - [x] Following the Yelb tutorial worked successfully.
+2. Debug - running this with Plausible's dockerfile creates problems
+  - [x] Comment out volumes because I don't want to deploy a persisted database on AWS (too complicated for right now)
+  - [ ] Plausible runs on AWS but I can't interact with the database with a `docker exec` command. This is necessary for disabling admin email authorization.
 
-1. Follow tutorial: [Getting started with Docker](https://aws.amazon.com/blogs/containers/deploy-applications-on-amazon-ecs-using-docker-compose/)
-  1.
+
+### `docker exec` debug options
+1. Find a way to run the `docker exec` command in the docker-compose before hosting on AWS.
+2. Configure an SMTP server on AWS so I can get an email confirmation from Plausible
+3. Follow Amazon's [documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html) on how get `docker exec` to work.
