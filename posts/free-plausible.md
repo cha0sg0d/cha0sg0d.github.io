@@ -14,7 +14,7 @@ However, as I [mentioned](hello-world.html) in my first post, I want to learn fo
 ### Background
 [Plausible Analytics](plausible) is a lightweight, open source analytics platform for basic website data. They allow self-hosting and have a bunch of [reasons](reasons) why they're better than Google Analytics.
 
-The self hosted instance comes in a [Docker](docker) image. This image runs in a container built with [Docker Compose](compose), which can run multiple sub-images within the main container.
+The self hosted instance comes in a [Docker](docker) image. This image runs in a container built with [Docker Compose](compose), which can run multiple containers linked to each other (for example, a client and database).
 
 ### Self hosting options
 
@@ -31,10 +31,15 @@ The self hosted instance comes in a [Docker](docker) image. This image runs in a
   - [x] Following the Yelb tutorial worked successfully.
 2. Debug - running this with Plausible's dockerfile creates problems
   - [x] Comment out volumes because I don't want to deploy a persisted database on AWS (too complicated for right now)
-  - [ ] Plausible runs on AWS but I can't interact with the database with a `docker exec` command. This is necessary for disabling admin email authorization.
+  - [ ] Plausible runs on AWS but I can't interact with the database with a `docker exec psql ... verify admin email` command. This is necessary for disabling admin email authorization.
 
 
 ### `docker exec` debug options
 1. Find a way to run the `docker exec` command in the docker-compose before hosting on AWS.
-2. Configure an SMTP server on AWS so I can get an email confirmation from Plausible
+  - [ ] run my own shell command to interact with `psql `in `docker-compose`
+    * I can run commands
+2. Configure an SMTP server on AWS so I can get an email verification from Plausible
+  - [ ] Configure SMTP to work locally.
+      * `mail_1 | 245 Connecting to gmail-smtp-in.l.google.com [2607:f8b0:400d:c02::1a]:25 ... failed: Cannot assign requested address`
+
 3. Follow Amazon's [documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html) on how get `docker exec` to work.

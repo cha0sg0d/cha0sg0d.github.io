@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/styles.css">
-
+    <script async defer data-domain="cha0sg0d.github.io" src="http://localhost/js/plausible.js"></script>
     
   </head>
   <body>
@@ -35,7 +35,7 @@
 <p>However, as I <a href="hello-world.html">mentioned</a> in my first post, I want to learn for understanding, not speed. So this is my journey of self-hosting Plausible Analytics:</p>
 <h3 id="background">Background</h3>
 <p><a href="plausible">Plausible Analytics</a> is a lightweight, open source analytics platform for basic website data. They allow self-hosting and have a bunch of <a href="reasons">reasons</a> why they're better than Google Analytics.</p>
-<p>The self hosted instance comes in a <a href="docker">Docker</a> image. This image runs in a container built with <a href="compose">Docker Compose</a>, which can run multiple sub-images within the main container.</p>
+<p>The self hosted instance comes in a <a href="docker">Docker</a> image. This image runs in a container built with <a href="compose">Docker Compose</a>, which can run multiple containers linked to each other (for example, a client and database).</p>
 <h3 id="self-hosting-options">Self hosting options</h3>
 <table>
 <thead>
@@ -80,12 +80,26 @@
 </ol>
 <ul>
 <li class="task-list-item"><input type="checkbox" checked disabled> Comment out volumes because I don't want to deploy a persisted database on AWS (too complicated for right now)</li>
-<li class="task-list-item"><input type="checkbox" disabled> Plausible runs on AWS but I can't interact with the database with a <code>docker exec</code> command. This is necessary for disabling admin email authorization.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Plausible runs on AWS but I can't interact with the database with a <code>docker exec psql ... verify admin email</code> command. This is necessary for disabling admin email authorization.</li>
 </ul>
 <h3 id="docker-exec-debug-options"><code>docker exec</code> debug options</h3>
 <ol>
 <li>Find a way to run the <code>docker exec</code> command in the docker-compose before hosting on AWS.</li>
-<li>Configure an SMTP server on AWS so I can get an email confirmation from Plausible</li>
+</ol>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> run my own shell command to interact with <code>psql</code>in <code>docker-compose</code><ul>
+<li>I can run commands</li>
+</ul></li>
+</ul>
+<ol start="2">
+<li>Configure an SMTP server on AWS so I can get an email verification from Plausible</li>
+</ol>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Configure SMTP to work locally.<ul>
+<li><code>mail_1 | 245 Connecting to gmail-smtp-in.l.google.com [2607:f8b0:400d:c02::1a]:25 ... failed: Cannot assign requested address</code></li>
+</ul></li>
+</ul>
+<ol start="3">
 <li>Follow Amazon's <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html">documentation</a> on how get <code>docker exec</code> to work.</li>
 </ol>
 
