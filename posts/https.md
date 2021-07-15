@@ -68,6 +68,16 @@ So, Instead of sending HTTP over a basic TCP/IP stack, Netscape Communications (
 [DNS](https://www.digitalocean.com/community/tutorials/an-introduction-to-dns-terminology-components-and-concepts) is the system for mapping human readable names to the IP address of the computer.
 
 
+<details>
+  <summary>hi</summary>
+
+  ## Heading
+  1. A numbered
+  2. list
+     * With some
+     * Sub bullets
+</details>
+
 
 
 
