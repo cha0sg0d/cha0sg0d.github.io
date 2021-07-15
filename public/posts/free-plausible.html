@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/styles.css">
     <script async defer data-domain="cha0sg0d.github.io" src="http://localhost:8000/js/plausible.js"></script>
-    <script async defer data-domain="cha0sg0d.github.io" src="http://plaus-loadb-19aq02y5i84mc-c0cc89da7482aaae.elb.us-east-2.amazonaws.com:8000/js/plausible.js"></script>
+    <script async defer data-domain="cha0sg0d.github.io" src="http://206.81.10.103:8000/js/plausible.js"></script>
+
 
     
   </head>
@@ -70,7 +71,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="attempt-1-aws">Attempt #1: AWS</h3>
+<h3 id="attempt-1-aws-3-days">Attempt #1: AWS (3 days)</h3>
 <ol>
 <li>Follow tutorial: <a href="https://aws.amazon.com/blogs/containers/deploy-applications-on-amazon-ecs-using-docker-compose/">AWS how to Docker</a></li>
 </ol>
@@ -83,6 +84,7 @@
 <ul>
 <li class="task-list-item"><input type="checkbox" checked disabled> Comment out volumes because I don't want to deploy a persisted database on AWS (too complicated for right now)</li>
 <li class="task-list-item"><input type="checkbox" disabled> Plausible runs on AWS but I can't interact with the database with a <code>docker exec psql ... verify admin email</code> command. This is necessary for disabling admin email authorization.</li>
+<li class="task-list-item"><input type="checkbox" checked disabled> explain docker context</li>
 </ul>
 <h3 id="docker-exec-debug-options"><code>docker exec</code> debug options</h3>
 <ol>
@@ -90,7 +92,7 @@
 </ol>
 <ul>
 <li class="task-list-item"><input type="checkbox" disabled> run my own shell command to interact with <code>psql</code>in <code>docker-compose</code><ul>
-<li>I can run commands</li>
+<li>I can run commands, but I need to access the <code>plausible_db</code> container <em>after</em> the <code>plausible</code> container has created the admin user. I haven't figured out how to</li>
 </ul></li>
 </ul>
 <ol start="2">
@@ -100,9 +102,20 @@
 <li class="task-list-item"><input type="checkbox" disabled> Configure SMTP to work locally.<ul>
 <li><code>mail_1 | 245 Connecting to gmail-smtp-in.l.google.com [2607:f8b0:400d:c02::1a]:25 ... failed: Cannot assign requested address</code></li>
 </ul></li>
+<li class="task-list-item"><input type="checkbox" checked disabled> <a href="https://github.com/BytemarkHosting/docker-smtp">https://github.com/BytemarkHosting/docker-smtp</a> config fixed this</li>
 </ul>
 <ol start="3">
 <li>Follow Amazon's <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html">documentation</a> on how get <code>docker exec</code> to work.</li>
+<li>Problems:</li>
+<li>URL changes for each deploy.<ol>
+<li>Seems odd to only access my hosted instance via LoadBalancer (instead of URL)</li>
+</ol></li>
+<li>Need HTTPS certificate</li>
+<li></li>
+</ol>
+<h3 id="attempt-2-digital-ocean">Attempt #2 Digital Ocean</h3>
+<ol>
+<li>Create a Digital Ocean droplet</li>
 </ol>
 
     </div>

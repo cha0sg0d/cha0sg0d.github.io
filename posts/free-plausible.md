@@ -25,21 +25,33 @@ The self hosted instance comes in a [Docker](docker) image. This image runs in a
 | Digital Ocean       |   simpler than AWS    | $5/month        |
 | localhost       | It works       | I don't want to spend CPU / battery running Docker all the time       |
 
-### Attempt #1: AWS
+### Attempt #1: AWS (3 days)
 
 1. Follow tutorial: [AWS how to Docker](https://aws.amazon.com/blogs/containers/deploy-applications-on-amazon-ecs-using-docker-compose/)
   - [x] Following the Yelb tutorial worked successfully.
 2. Debug - running this with Plausible's dockerfile creates problems
   - [x] Comment out volumes because I don't want to deploy a persisted database on AWS (too complicated for right now)
   - [ ] Plausible runs on AWS but I can't interact with the database with a `docker exec psql ... verify admin email` command. This is necessary for disabling admin email authorization.
+  - [x] explain docker context
 
 
 ### `docker exec` debug options
 1. Find a way to run the `docker exec` command in the docker-compose before hosting on AWS.
   - [ ] run my own shell command to interact with `psql `in `docker-compose`
-    * I can run commands
+    * I can run commands, but I need to access the `plausible_db` container *after* the `plausible` container has created the admin user. I haven't figured out how to
 2. Configure an SMTP server on AWS so I can get an email verification from Plausible
   - [ ] Configure SMTP to work locally.
       * `mail_1 | 245 Connecting to gmail-smtp-in.l.google.com [2607:f8b0:400d:c02::1a]:25 ... failed: Cannot assign requested address`
+  - [x] https://github.com/BytemarkHosting/docker-smtp config fixed this
+
 
 3. Follow Amazon's [documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html) on how get `docker exec` to work.
+4. Problems:
+  1. URL changes for each deploy.
+    1. Seems odd to only access my hosted instance via LoadBalancer (instead of URL)
+  2. Need HTTPS certificate
+  3.
+
+### Attempt #2 Digital Ocean
+
+1. Create a Digital Ocean droplet
