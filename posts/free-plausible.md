@@ -55,3 +55,7 @@ The self hosted instance comes in a [Docker](docker) image. This image runs in a
 ### Attempt #2 Digital Ocean
 
 1. Create a Digital Ocean droplet
+2. generate ssh key
+3. Todo:
+  4. Understand HTTPS, connect my domain name plausible.one to DNS
+5. 

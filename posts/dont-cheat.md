@@ -2,7 +2,7 @@
 title: "Resisting the urge to cheat"
 description: "How I built this website"
 date: "2021-07-11"
-public: true
+public: false
 ---
 
 Here's how I built this [website](https://https://github.com/cha0sg0d/cha0sg0d.github.io).
