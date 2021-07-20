@@ -95,7 +95,7 @@ The Plausible team has an [example repository](https://github.com/plausible/host
         RELAY_HOST: smtp.gmail.com
         RELAY_PORT: 587
         RELAY_USERNAME: agoss98@gmail.com
-        RELAY_PASSWORD: ethknhailjzbyfii
+        RELAY_PASSWORD: MY_PASSWORD
     ```
 
       * Note that the `RELAY_PASSWORD` is my Google App Password, not my standard password.
