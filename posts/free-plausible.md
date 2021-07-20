@@ -2,7 +2,7 @@
 title: "Cheap analytics"
 description: "Self hosting plausible analytics"
 date: "2021-07-12"
-public: true
+public: false
 ---
 
 ### The dilemma
@@ -58,4 +58,4 @@ The self hosted instance comes in a [Docker](docker) image. This image runs in a
 2. generate ssh key
 3. Todo:
   4. Understand HTTPS, connect my domain name plausible.one to DNS
-5. 
+5.
