@@ -79,100 +79,97 @@
 <ol start="2">
 <li>
 <p>Login with your email and password, then request to be emailed the activation code.  </p>
-<p><strong>This didn't work for me</strong>. I kept getting the following error:  </p>
-<pre><code class="hljs language-bash">243 Connecting to gmail-smtp-in.l.google.com [2607:f8b0:400d:c00::1b]:25 ... failed: Cannot assign requested address
+<p><strong>This didn't work for me</strong>. I kept getting the following error:</p>
+<pre><code class="hljs language-bash">  243 Connecting to gmail-smtp-in.l.google.com [2607:f8b0:400d:c00::1b]:25 ... failed: Cannot assign requested address
 
-243 LOG: MAIN
+  243 LOG: MAIN
 
-243 H=gmail-smtp-in.l.google.com [2607:f8b0:400d:c00::1b] Cannot assign requested address</code></pre>
+  243 H=gmail-smtp-in.l.google.com [2607:f8b0:400d:c00::1b] Cannot assign requested address</code></pre>
 </li>
 </ol>
-<pre><code>  * Note: I'm still not sure why the standard SMTP container wasn't able to send mail directly.
+<ul>
+<li>Note: I'm still not sure why the standard SMTP container wasn't able to send mail directly.</li>
+</ul>
+<ol start="3">
+<li>
+<p>Clearly, the SMTP mail server wasn't working with the default settings.</p>
+<details>
+  <summary>What is SMTP?</summary>
+<h2 id="smtp-simple-mail-transfer-protocol">SMTP (Simple Mail Transfer Protocol)</h2>
+<p>  SMTP is an internet standard communication protocol for electronic mail transmission.  Simply put, SMTP sets a standard for how computers that send e-mail should talk to each other. Mail servers typically run SMTP.</p>
+</details>
+&nbsp;
+<p>  To solve this issue, I examined the Docker image for <a href="https://github.com/BytemarkHosting/docker-smtp"><code>bytemark/smtp</code></a>, the mail server Plausible uses.</p>
+<p>  The following configuration in the <code>hosting/docker-compose</code> file solved my issue:</p>
+<pre><code class="hljs language-yaml"><span class="hljs-attr">mail:</span>
+<span class="hljs-attr">  image:</span> <span class="hljs-string">bytemark/smtp</span>
+<span class="hljs-attr">  restart:</span> <span class="hljs-string">always</span>
+<span class="hljs-attr">  environment:</span>
+<span class="hljs-attr">    SMTP_HOST_PORT:</span> <span class="hljs-number">587</span>
+<span class="hljs-attr">    RELAY_HOST:</span> <span class="hljs-string">smtp.gmail.com</span>
+<span class="hljs-attr">    RELAY_PORT:</span> <span class="hljs-number">587</span>
+<span class="hljs-attr">    RELAY_USERNAME:</span> <span class="hljs-string">agoss98@gmail.com</span>
+<span class="hljs-attr">    RELAY_PASSWORD:</span> <span class="hljs-string">MY_PASSWORD</span></code></pre>
+<ul>
+<li>Note that the <code>RELAY_PASSWORD</code> is my Google App Password, not my standard password.</li>
+</ul>
+</li>
+</ol>
+<ol start="4">
+<li>I needed two extra steps to get Gmail to allow this mail to send:</li>
+<li>Allow less-secure apps to <a href="https://support.google.com/accounts/answer/6010255">access</a> my account</li>
+<li>Set an app <a href="https://support.google.com/accounts/answer/185833">password</a> that allows access to Gmail.</li>
+</ol>
+<h3 id="2-get-plausible-running-on-a-remote-host">2. Get Plausible running on a remote host</h3>
+<details>
+  <summary>What is remote hosting?</summary>
+<h2 id="remote-hosting">Remote hosting</h2>
+<p>  If I wanted to host Plausible on my own computer I could... but I would be using precious battery life, CPU power, and RAM to run the code. For short-term instances of putting something online, local hosting is fine, but because I want Plausible to always be running, I don't want to spend my computer's resources.  </p>
+<p>  Good news! For $5/month, Digital Ocean, a cloud service provider, let's me run software on one of their servers.</p>
+</details>
+&nbsp;
+<ol>
+<li>Get a Digital Ocean <a href="https://www.digitalocean.com/?refcode=d2a3afe52625&#x26;utm_campaign=Referral_Invite&#x26;utm_medium=Referral_Program&#x26;utm_source=CopyPaste">account</a></li>
+<li>Set up a <a href="https://docs.digitalocean.com/products/droplets/">basic Droplet</a> at the cheapest level ($5/month)</li>
+<li>Connect remotely to your Droplet via your own console via <a href="https://docs.digitalocean.com/products/droplets/how-to/connect-with-ssh/">ssh</a>.</li>
+</ol>
+<ul>
+<li>
+<p>After running <code>ssh root@DROPLET_ID_ADDRESS</code>, you should see the following in your Terminal:</p>
+<pre><code>  Welcome to DigitalOcean's 1-Click Docker Droplet.
+  To keep this Droplet secure, the UFW firewall is enabled.
+  All ports are BLOCKED except 22 (SSH), 2375 (Docker) and 2376 (Docker).
 
+  * The Docker 1-Click Quickstart guide is available at:
+    https://do.co/3j6j3po#start
 
-3. Clearly, the SMTP mail server wasn't working with the default settings.
+  * You can SSH to this Droplet in a terminal as root: ssh root@DROPLET_ID_ADDRESS
 
-  &#x3C;details>
-    &#x3C;summary>What is SMTP?&#x3C;/summary>
+  * Docker is installed and configured per Docker's recommendations:
+    https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
-    ## SMTP (Simple Mail Transfer Protocol)
-    SMTP is an internet standard communication protocol for electronic mail transmission.  Simply put, SMTP sets a standard for how computers that send e-mail should talk to each other. Mail servers typically run SMTP.
+  * Docker Compose is installed and configured per Docker's recommendations:
+    https://docs.docker.com/compose/install/#install-compose
 
-  &#x3C;/details>
-  &#x26;nbsp;
-
-    To solve this issue, I examined the Docker image for [`bytemark/smtp`](https://github.com/BytemarkHosting/docker-smtp), the mail server Plausible uses.
-
-    The following configuration in the `hosting/docker-compose` file solved my issue:
-
-    ```yaml
-    mail:
-      image: bytemark/smtp
-      restart: always
-      environment:
-        SMTP_HOST_PORT: 587
-        RELAY_HOST: smtp.gmail.com
-        RELAY_PORT: 587
-        RELAY_USERNAME: agoss98@gmail.com
-        RELAY_PASSWORD: MY_PASSWORD
-    ```
-
-      * Note that the `RELAY_PASSWORD` is my Google App Password, not my standard password.
-
-
-4. I needed two extra steps to get Gmail to allow this mail to send:
-  1. Allow less-secure apps to [access](https://support.google.com/accounts/answer/6010255) my account
-  2. Set an app [password](https://support.google.com/accounts/answer/185833) that allows access to Gmail.
-
-
-### 2. Get Plausible running on a remote host
-
-
-&#x3C;details>
-  &#x3C;summary>What is remote hosting?&#x3C;/summary>
-
-  ## Remote hosting
-  If I wanted to host Plausible on my own computer I could... but I would be using precious battery life, CPU power, and RAM to run the code. For short-term instances of putting something online, local hosting is fine, but because I want Plausible to always be running, I don't want to spend my computer's resources.  
-
-  Good news! For $5/month, Digital Ocean, a cloud service provider, let's me run software on one of their servers.
-
-&#x3C;/details>
-&#x26;nbsp;
-
-1. Get a Digital Ocean [account](https://www.digitalocean.com/?refcode=d2a3afe52625&#x26;utm_campaign=Referral_Invite&#x26;utm_medium=Referral_Program&#x26;utm_source=CopyPaste)
-2. Set up a [basic Droplet](https://docs.digitalocean.com/products/droplets/) at the cheapest level ($5/month)
-3. Connect remotely to your Droplet via your own console via [ssh](https://docs.digitalocean.com/products/droplets/how-to/connect-with-ssh/).
-  * After running `ssh root@DROPLET_ID_ADDRESS`, you should see the following in your Terminal:
-  ```zsh
-    Welcome to DigitalOcean's 1-Click Docker Droplet.
-    To keep this Droplet secure, the UFW firewall is enabled.
-    All ports are BLOCKED except 22 (SSH), 2375 (Docker) and 2376 (Docker).
-
-    * The Docker 1-Click Quickstart guide is available at:
-      https://do.co/3j6j3po#start
-
-    * You can SSH to this Droplet in a terminal as root: ssh root@DROPLET_ID_ADDRESS
-
-    * Docker is installed and configured per Docker's recommendations:
-      https://docs.docker.com/install/linux/docker-ce/ubuntu/
-
-    * Docker Compose is installed and configured per Docker's recommendations:
-      https://docs.docker.com/compose/install/#install-compose
-
-    For help and more information, visit https://do.co/3j6j3po
+  For help and more information, visit https://do.co/3j6j3po
 </code></pre>
-  <details>
-    <summary>What is SSH?</summary>
-<pre><code>## SSH
-1. What is it?  
-
-      The SSH key command instructs your system that you want to open an encrypted Secure Shell Connection to access a remote server over the Internet.
-2. How does it work?  
-
-  SSH relies on multiple cryptographic techniques, including symmetric encryption, asymmetric encryption, and hashing. This provides guarantees about the security of the connection to the remote server.
-</code></pre>
-  </details>  
-  &nbsp;
+<details>
+  <summary>What is SSH?</summary>
+<h2 id="ssh">SSH</h2>
+<ol>
+<li>
+<p>What is it?  </p>
+<p>  The SSH key command instructs your system that you want to open an encrypted Secure Shell Connection to access a remote server over the Internet.</p>
+</li>
+<li>
+<p>How does it work?  </p>
+<p>SSH relies on multiple cryptographic techniques, including symmetric encryption, asymmetric encryption, and hashing. This provides guarantees about the security of the connection to the remote server.</p>
+</li>
+</ol>
+</details>  
+&nbsp;
+</li>
+</ul>
 <ol start="4">
 <li>
 <p>Send the <code>plausible/hosting</code> repo to the Droplet via <code>scp</code> (secure copy):</p>
