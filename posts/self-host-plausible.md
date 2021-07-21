@@ -60,15 +60,17 @@ The Plausible team has an [example repository](https://github.com/plausible/host
 
 2. Login with your email and password, then request to be emailed the activation code.  
 
-  **This didn't work for me**. I kept getting the following error:  
-  ```bash
-  243 Connecting to gmail-smtp-in.l.google.com [2607:f8b0:400d:c00::1b]:25 ... failed: Cannot assign requested address
+  **This didn't work for me**. I kept getting the following error:
 
-  243 LOG: MAIN
+    ```bash
+      243 Connecting to gmail-smtp-in.l.google.com [2607:f8b0:400d:c00::1b]:25 ... failed: Cannot assign requested address
 
-  243 H=gmail-smtp-in.l.google.com [2607:f8b0:400d:c00::1b] Cannot assign requested address
-```
-  * Note: I'm still not sure why the standard SMTP container wasn't able to send mail directly.
+      243 LOG: MAIN
+
+      243 H=gmail-smtp-in.l.google.com [2607:f8b0:400d:c00::1b] Cannot assign requested address
+  ```  
+
+* Note: I'm still not sure why the standard SMTP container wasn't able to send mail directly.
 
 
 3. Clearly, the SMTP mail server wasn't working with the default settings.
@@ -96,9 +98,8 @@ The Plausible team has an [example repository](https://github.com/plausible/host
         RELAY_PORT: 587
         RELAY_USERNAME: agoss98@gmail.com
         RELAY_PASSWORD: MY_PASSWORD
-    ```
-
-      * Note that the `RELAY_PASSWORD` is my Google App Password, not my standard password.
+    ```  
+    * Note that the `RELAY_PASSWORD` is my Google App Password, not my standard password.
 
 
 4. I needed two extra steps to get Gmail to allow this mail to send:
@@ -124,7 +125,7 @@ The Plausible team has an [example repository](https://github.com/plausible/host
 2. Set up a [basic Droplet](https://docs.digitalocean.com/products/droplets/) at the cheapest level ($5/month)
 3. Connect remotely to your Droplet via your own console via [ssh](https://docs.digitalocean.com/products/droplets/how-to/connect-with-ssh/).
   * After running `ssh root@DROPLET_ID_ADDRESS`, you should see the following in your Terminal:
-  ```zsh
+  ```
     Welcome to DigitalOcean's 1-Click Docker Droplet.
     To keep this Droplet secure, the UFW firewall is enabled.
     All ports are BLOCKED except 22 (SSH), 2375 (Docker) and 2376 (Docker).
