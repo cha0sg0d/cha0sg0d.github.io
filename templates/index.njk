@@ -2,6 +2,13 @@
 
 {% block body %}
   <section>
+    <h1>toe knee</h1>
+    <p>
+      Hey I'm Tony. Curious how tech shapes our 🌍 and vice versa.
+    </p>
+    <p>Currently interested in blockchain and Evgeny Morozov.</p>
+  </section>
+  <section>
     <header>
       <h1>Blog</h1>
     </header>
@@ -10,6 +17,9 @@
     {% for post in posts %}
       <li class="title">
         <a href="/posts/{{ post.slug }}.html">{{ post.title }}</a>
+        <span class="timestamp">
+          {{ post.date }}
+        </span>
       </li>
     {% endfor %}
     </ol>

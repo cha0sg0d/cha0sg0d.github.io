@@ -12,13 +12,18 @@ As a college CS student I could spin up a `create-react-app` but can't explain w
 ### Do it differently
 So my goal with this blog is simply to understand concepts, and share my explanations as I go.
 It took me four years and an expensive college education to honestly ask myself: *how do I really learn?*
-It's not via Zoom lectures and textbooks, that's for sure. It's by doing, learning for *understanding*, and challenging myself for reasons other than a grade.
+It's not via Zoom lectures and textbooks, that's for sure. It's by doing, learning for *understanding*, and challenging myself for reasons other than a grade.  
 
-### Tutorial philosophy
+So, I will be sharing ideas and tutorials on this blog for my own learning and for anyone who visits.
+
+
+### Goals for my writing
 An excellent teaching blog, [BetterExplained](https://betterexplained.com/about/), has a great philosophy on teaching new concepts:
   > Get a map, not directions. Memorization isn’t understanding: you follow the recipe, apply the formula, and get from A to B without knowing why. Directions “work”, but what about wrong turns? A new destination? Helping a friend who’s lost at point C, not A?
 
 A Freecodecamp [article](https://www.freecodecamp.org/news/docker-nginx-letsencrypt-easy-secure-reverse-proxy-40165ba3aee2/) agrees:
 > I’m a firm believer in understanding what you are doing. There was a time where I would follow guides, and have no clue on how to troubleshoot failures
+
+I will be striving to make any concept I write about understandable to someone with little prior knowledge on the topic.
 
 Shoutout to [ncase](https://ncase.me/faq/#toc_9) and [@omarish](https://omarish.com/) for inspiring me to actually write something.
