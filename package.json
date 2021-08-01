@@ -25,6 +25,7 @@
     "eslint": "^7.32.0",
     "front-matter": "^4.0.2",
     "nunjucks": "^3.2.3",
+    "pluralize": "^8.0.0",
     "remark": "^13.0.0",
     "remark-highlight.js": "^6.0.0",
     "remark-html": "^13.0.1",

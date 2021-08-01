@@ -11,6 +11,7 @@ import remark from 'remark';
 import remarkHTML from 'remark-html';
 import remarkSlug from 'remark-slug';
 import remarkHighlight from 'remark-highlight.js';
+import pluralize from 'pluralize';
 
 // copy of hashDict to modify
 let currHashDict = JSON.parse(JSON.stringify(hashDict))
@@ -24,6 +25,33 @@ const templateDirPath = new URL('templates', import.meta.url).pathname;
 // Source directory
 const contentDirPath = new URL('content', import.meta.url).pathname;
 
+const SECTIONS = ['post','wiki','project'];
+
+const HEADERS = {
+  projects: {
+      title: 'Projects',
+      paragraphs: [
+        '👇'
+      ],
+      listTitle: ''
+  },
+  wikis: {
+      title: 'Wiki',
+      paragraphs: [
+        'Welcome to my personal wiki.',
+        'Here are defintions in my own words.'
+      ],
+      listTitle: ''
+  },
+  index: {
+        title: 'me',
+        paragraphs: [
+          'Hey I\'m Tony. Curious how tech shapes our 🌍 and vice versa.',
+          'Currently interested in blockchain and Evgeny Morozov.'
+        ],
+        listTitle: 'Blog'
+    },
+}
 
 // get sha256 hash of file
 const hashFile = (filePath) => {
@@ -83,13 +111,18 @@ const parseMarkdown = (fileName, fileData) => {
   // Split the file content into the front matter (attributes) and post body.
   const { attributes, body } = frontMatter(fileData);
 
-  return { ...attributes, body, slug };
+  const markDownDict = { ...attributes, body, slug };
+  const cleanDate = date => {
+    const d = new Date(date);
+    const options = {month: 'long', day: 'numeric', year: 'numeric'};
+    return d.toLocaleDateString('us-EN', options); // parsed date
+  }
+  // format the markdown date
+  markDownDict.date ? markDownDict.date = cleanDate(markDownDict.date): null;
+  return markDownDict;
 };
 
-/**
- * getContent lists and reads all the Markdown files in the posts directory,
- * returning a list of post objects after parsing the file contents.
- */
+// reads the Markdown files in dirPath and parses to dict
 const getContent = async (dirPath) => {
   // Get a list of all Markdown files in the directory.
   const fileNames = await getFiles(dirPath, '.md');
@@ -107,8 +140,6 @@ const getContent = async (dirPath) => {
 
 // getTemplatePath creates a file path to a .njk template file.
 const getTemplatePath = (dirName, fileName) => {
-  // console.log(`dir ${dirName} file ${fileName}`)
-  // console.log(path.resolve(dirName, path.format({ name: fileName, ext: '.njk' })));
   return path.resolve(dirName, path.format({ name: fileName, ext: '.njk' }));
 }
 
@@ -161,60 +192,62 @@ const createContentFile = async (fileData, outputPath) => {
 }
 
 // createIndexFile generates an index file.
-const createIndexFile = async (content) => {
-
-  let posts = [];
-  let projects = [];
-  let wikis = [];
-
-  content.forEach((item) => {
-    switch(item.type) {
-      case 'post':
-        posts.push(item);
-        break;
-      case 'project':
-        projects.push(item);
-        break;
-      case 'wiki':
-        wikis.push(item);
-        break;
-      default:
-        wikis.push(item);
-        break;
-    }
-  });
-
-  // content.filter(c => c.type == 'post');
-  // const wiki = content.filter(c => c.type != 'post');
-  // const projects = content.filter(c => c.type == 'project');
+const createIndex = async (header, items, templateName, title='') => {
 
   // Use the template engine to generate the file content.
-  const fileData = nunjucks.render(getTemplatePath('templates','index'), {
+  const fileData = nunjucks.render(getTemplatePath('templates',templateName), {
+    header: header,
     sections: [
       {
-        title: 'Blog',
-        items: posts
-      },
-      {
-        title: 'Wiki',
-        items: wikis
-      },
-      {
-        title: 'Projects',
-        items: projects
+        title: title, // can be empty
+        items: items
       },
     ]
   });
-  // Create a file path in the destination directory.
-  const filePath = path.resolve(publicDirPath, 'index.html');
 
-  // Save the file in the desired location.
-  // this should always get updated
-  await fs.writeFile(filePath, fileData, 'utf-8');
+  return fileData;
+
+}
+const createIndexFile = async (content) => {
+
+  let contentDict = {};
+  SECTIONS.forEach((s) => {
+    contentDict[s] = {}
+    contentDict[s].items = [];
+  });
+
+
+  content.forEach((item) => {
+    const type = item.type ? item.type : 'wiki'; // wiki is default
+    contentDict[type].items.push(item);
+  });
+
+
+  for (const [type, value] of Object.entries(contentDict)) {
+    // console.log(`${type}: ${value}`);
+    const listTemplate = 'list';
+    let slug = pluralize(type);
+    let items = value.items
+    if (type == 'post') {
+      slug = 'index';
+    }
+    const header = HEADERS[slug];
+    const title = HEADERS[slug].listTitle;
+    const fileData = await createIndex(header, items, listTemplate, title);
+
+    // Create a file path in the destination directory.
+    const filePath = path.resolve(publicDirPath, `${slug}.html`);
+
+    // Save the file in the desired location.
+    // this should always get updated
+    await fs.writeFile(filePath, fileData, 'utf-8');
+  }
+
+  console.log(`contentDict`, contentDict);
 };
 
 const build = async () => {
-  console.log(`starting blog generation...`)
+  console.log(`starting site generation...`)
   // Ensure the public directory exists.
   await fs.mkdir(publicDirPath, { recursive: true });
 
