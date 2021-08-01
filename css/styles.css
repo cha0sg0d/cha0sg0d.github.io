@@ -1,6 +1,10 @@
 body {
-  padding: 2% 10% 10% 10%;
+  padding: 5% 15% 5% 15%;
   font-size: 62.5%; /*sets 1em to 10px for convinience*/
+}
+
+.main {
+  text-align: left;
 }
 
 h1 {
@@ -9,6 +13,10 @@ h1 {
 
 section {
   font-size: 1.5em;
+}
+
+ul {
+  list-style-type: circle;
 }
 .navbar {
   width: 100%;
