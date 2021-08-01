@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
   <head>
-    {% block header %}
+    
     <meta charset="utf-8">
-    <meta description="{{ description | default('Build your own static site generator') }}">
+    <meta description="Learning some goddam acronyms">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>toe knee</title>
     <link rel="shortcut icon" href="/img/planet.png">
@@ -15,12 +15,31 @@
     <script async defer data-domain="cha0sg0d.github.io" src="https://plausible.one/js/plausible.js"></script>
 
 
-    {% endblock %}
+    
   </head>
   <body>
-    {% include "./nav.njk" %}
+    <div class="navbar">
+  <a href="/"> <img src="/img/planet.png" alt="cha0splanet" width="16" height="16"></a>
+  <!-- <a href="/rss.html" class="right"><i class="fa fa-rss"></i></a> -->
+  <a href="https://twitter.com/cha0sg0d11" target="_blank" class="right"><i class="fa fa-twitter"></i></a>
+  <a href="https://github.com/cha0sg0d" target="_blank" class="right"><i class="fa fa-github"></i></a>
+  <!-- <a href="/projects.html" class="right"> <i class="fa fa-laptop"></i></a> -->
+</div>
+
     <div class="main">
-      {% block body %}{% endblock %}
+      
+  <article class="blog">
+    <header>
+      <h1>Wiki test</h1>
+    </header>
+    <div class="markdown-body">
+      <h3 id="ethereum">Ethereum</h3>
+<p>As discussed in the Etherem <a href="/eth.html">post</a></p>
+
+    </div>
+  </article>
+
+
     </div>
   </body>
 </html>

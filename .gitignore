@@ -1,3 +1,11 @@
+# Directories
 node_modules/
 
 .DS_Store
+
+.eslintrc.json
+hash.js # don't want to publicly store file info
+
+
+# Misc files
+.DS_Store       # Macs often create this file

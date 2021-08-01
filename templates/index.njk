@@ -2,25 +2,45 @@
 
 {% block body %}
   <section>
+    <h1>me</h1>
     <p>
       Hey I'm Tony. Curious how tech shapes our 🌍 and vice versa.
     </p>
     <p>Currently interested in blockchain and Evgeny Morozov.</p>
   </section>
+
   <section>
+    {% for section in sections %}
+      <header>
+        <h1>{{ section.title }}</h1>
+      </header>
+      <ul>
+        {% for item in section.items %}
+          <li class="title">
+            <a href="{{ item.slug }}.html">{{ item.title }}</a>
+            <span class="timestamp">
+              {{ item.date }}
+            </span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+  </section>
+
+  <!-- <section>
     <header>
-      <h1>Blog</h1>
+      <h1>Wiki</h1>
     </header>
 
-    <ol>
-    {% for post in posts %}
+    <ul>
+    {% for wiki in wikis %}
       <li class="title">
-        <a href="/posts/{{ post.slug }}.html">{{ post.title }}</a>
+        <a href="{{ wiki.slug }}.html">{{ wiki.title }}</a>
         <span class="timestamp">
-          {{ post.date }}
+          {{ wiki.date }}
         </span>
       </li>
     {% endfor %}
-    </ol>
-  <section>
+    </ul>
+  <section> -->
 {% endblock %}

@@ -1,68 +1,83 @@
-const fs = require('fs').promises;
-const path = require('path');
-const frontMatter = require('front-matter');
-const remark = require('remark');
-const remarkHTML = require('remark-html');
-const remarkSlug = require('remark-slug');
-const remarkHighlight = require('remark-highlight.js');
-const nunjucks = require('nunjucks');
+// Static site builder
 
-// Store a reference to the source directory.
-const postsDirPath = path.resolve(__dirname, 'posts');
-const publicPostsDirPath = path.resolve(__dirname, 'public/posts');
-// Reference to static directory (templates)
-const staticFileDir = path.resolve(__dirname, 'static');
-const staticFiles = ['projects','rss'];
-// Store a reference path to the destination directory.
-const publicDirPath = path.resolve(__dirname, 'public');
+// Modules
+import { promises as fs } from 'fs';
+import path from 'path';
+import hashDict from './hash.js';
+import shell from 'shelljs';
+import frontMatter from 'front-matter';
+import nunjucks from 'nunjucks';
+import remark from 'remark';
+import remarkHTML from 'remark-html';
+import remarkSlug from 'remark-slug';
+import remarkHighlight from 'remark-highlight.js';
 
-/**
- * getFiles returns a list of all files in a directory path {dirPath}
- * that match a given file extension {fileExt} (optional).
- */
+// copy of hashDict to modify
+let currHashDict = JSON.parse(JSON.stringify(hashDict))
+
+// Destination directory
+const publicDirPath = new URL('public', import.meta.url).pathname;
+
+// Template directory
+const templateDirPath = new URL('templates', import.meta.url).pathname;
+
+// Source directory
+const contentDirPath = new URL('content', import.meta.url).pathname;
+
+
+// get sha256 hash of file
+const hashFile = (filePath) => {
+  console.log(`\n hashing ${filePath} \n`)
+  const result = shell.exec(`sha256sum ${filePath}`).stdout;
+  const hash = result.split(' ')[0]; // get checksum from output
+  return hash;
+}
+
+// Get files in dirPath with optional fileExt
 const getFiles = async (dirPath, fileExt = '') => {
   // List all the entries in the directory.
-  const dirents = await fs.readdir(dirPath, { withFileTypes: true });
+  const dirContents = await fs.readdir(dirPath, { withFileTypes: true });
 
   return (
-    dirents
+    dirContents
       // Omit any sub-directories.
-      .filter(dirent => dirent.isFile())
+      .filter(dirContent => dirContent.isFile())
       // Ensure the file extension matches a given extension (optional).
-      .filter(dirent =>
-        fileExt.length ? dirent.name.toLowerCase().endsWith(fileExt) : true
+      .filter(dirContent =>
+        fileExt.length ? dirContent.name.toLowerCase().endsWith(fileExt) : true
       )
       // Return a list of file names.
-      .map(dirent => dirent.name)
+      .map(dirContent => dirContent.name)
   );
 };
 
-// Write a file from template
-const writeFileFromTemplate = async (dirName, filename, publicDirPath) => {
-  console.log(`template path ${getTemplatePath(dirName, filename)}`)
-  const fileData = nunjucks.render(getTemplatePath(dirName, filename))
-  const outputFilePath = path.resolve(publicDirPath, `${filename}.html`);
-  await fs.writeFile(outputFilePath, fileData, 'utf-8');
-};
-
 // removeFiles deletes all files in a directory that match a file extension.
-const removeFiles = async (dirPath, fileExt) => {
+const removeFiles = async (dirPath, fileExt, removeAll) => {
   // Get a list of all files in the directory.
   const fileNames = await getFiles(dirPath, fileExt);
 
   // Create a list of files to remove.
-  const filesToRemove = fileNames.map(fileName =>
-    fs.unlink(path.resolve(dirPath, fileName))
-  );
+  const filesToRemove = fileNames.map(fileName => {
+    // get hash of file
+    const filePath = path.resolve(dirPath, fileName);
+    const prevHash = currHashDict[filePath];
+    const currHash = hashFile(filePath);
+    // if file has changed, delete it.
+    if (prevHash != currHash || removeAll) {
+      console.log(`\n ${fileName} has changed\n`)
+      fs.unlink(filePath);
+      console.log(`\n removed ${fileName} \n`)
+    }
+    else {
+      console.log(`\n ${fileName} has not changed\n`)
+    }
+  });
 
   return Promise.all(filesToRemove);
 };
 
-/**
- * parsePost consumes the file name and file content and returns a post
- * object with separate front matter (meta), post body and slug.
- */
-const parsePost = (fileName, fileData) => {
+// Turn Markdown into a dict.
+const parseMarkdown = (fileName, fileData) => {
   // Strip the extension from the file name to get a slug.
   const slug = path.basename(fileName, '.md');
   // Split the file content into the front matter (attributes) and post body.
@@ -72,10 +87,10 @@ const parsePost = (fileName, fileData) => {
 };
 
 /**
- * getPosts lists and reads all the Markdown files in the posts directory,
+ * getContent lists and reads all the Markdown files in the posts directory,
  * returning a list of post objects after parsing the file contents.
  */
-const getPosts = async dirPath => {
+const getContent = async (dirPath) => {
   // Get a list of all Markdown files in the directory.
   const fileNames = await getFiles(dirPath, '.md');
 
@@ -86,13 +101,17 @@ const getPosts = async dirPath => {
   // Asynchronously read all the file contents.
   const fileData = await Promise.all(filesRead);
 
-  return fileNames.map((fileName, i) => parsePost(fileName, fileData[i]));
+  // return parsed contents
+  return fileNames.map((fileName, i) => parseMarkdown(fileName, fileData[i]));
 };
 
-/**
- * markdownToHTML converts Markdown text to HTML.
- * Adds links to headings, and code syntax highlighting.
- */
+// getTemplatePath creates a file path to a .njk template file.
+const getTemplatePath = (dirName, fileName) => {
+  // console.log(`dir ${dirName} file ${fileName}`)
+  // console.log(path.resolve(dirName, path.format({ name: fileName, ext: '.njk' })));
+  return path.resolve(dirName, path.format({ name: fileName, ext: '.njk' }));
+}
+
 const markdownToHTML = text =>
   new Promise((resolve, reject) =>
     remark()
@@ -104,91 +123,131 @@ const markdownToHTML = text =>
       )
   );
 
-// getTemplatePath creates a file path to an HTML template file.
-const getTemplatePath = (dirName, fileName) => {
-  console.log(`dir ${dirName} file ${fileName}`)
-  console.log(`res ${path.resolve(__dirname, dirName, path.format({ name: fileName, ext: '.njk' }))}`)
-  return path.resolve(__dirname, dirName, path.format({ name: fileName, ext: '.njk' }));
+const createContentFile = async (fileData, outputPath) => {
+    // Use nunjucks to render an html page from markdown data.
+    // const type = fileData.type;
+    console.log(`\n turning ${fileData.title} to HTML \n`);
+    const template = 'post';
+    const templatePath = getTemplatePath(templateDirPath, template)
+    // console.log(`templatePath ${templatePath}`);
+
+    // Use the template engine to generate the file content.
+    const contentFile = nunjucks.render(templatePath, {
+      ...fileData,
+      // Convert Markdown to HTML.
+      body: await markdownToHTML(fileData.body)
+    });
+
+    // Combine the slug and file extension to create a file name.
+    const fileName = path.format({ name: fileData.slug, ext: '.html' });
+
+    // Create a file path in the destination directory.
+    const filePath = path.resolve(outputPath, fileName);
+
+    // Save the file in the desired location.
+    // only write if the file doesn't exist.
+    try {
+      await fs.writeFile(filePath, contentFile, { flag: 'wx' });
+    } catch (e) {
+      console.log(`\n thanks for not overwriting ${fileData.title} \n`)
+    }
+
+    const hash = hashFile(filePath);
+
+    // write to currHashDict;
+    currHashDict[filePath] = hash;
+
+    return fileData;
 }
 
-/**
- * createPostFile generates a new HTML page from a template and saves the file.
- * It also converts the post body from Markdown to HTML.
- */
-const createPostFile = async (post, dirName) => {
-  // Use the template engine to generate the file content.
-  const fileData = nunjucks.render(getTemplatePath('templates', 'post'), {
-    ...post,
-    // Convert Markdown to HTML.
-    body: await markdownToHTML(post.body)
+// createIndexFile generates an index file.
+const createIndexFile = async (content) => {
+
+  let posts = [];
+  let projects = [];
+  let wikis = [];
+
+  content.forEach((item) => {
+    switch(item.type) {
+      case 'post':
+        posts.push(item);
+        break;
+      case 'project':
+        projects.push(item);
+        break;
+      case 'wiki':
+        wikis.push(item);
+        break;
+      default:
+        wikis.push(item);
+        break;
+    }
   });
 
-  // Combine the slug and file extension to create a file name.
-  const fileName = path.format({ name: post.slug, ext: '.html' });
-  // Create a file path in the destination directory.
-  const filePath = path.resolve(dirName, fileName);
+  // content.filter(c => c.type == 'post');
+  // const wiki = content.filter(c => c.type != 'post');
+  // const projects = content.filter(c => c.type == 'project');
 
-  // Save the file in the desired location.
-  await fs.writeFile(filePath, fileData, 'utf-8');
-
-  return post;
-};
-
-/**
- * createIndexFile generates an index file with a list of blog posts.
- */
-const createIndexFile = async (posts) => {
   // Use the template engine to generate the file content.
-  const fileData = nunjucks.render(getTemplatePath('templates','index'), { posts });
+  const fileData = nunjucks.render(getTemplatePath('templates','index'), {
+    sections: [
+      {
+        title: 'Blog',
+        items: posts
+      },
+      {
+        title: 'Wiki',
+        items: wikis
+      },
+      {
+        title: 'Projects',
+        items: projects
+      },
+    ]
+  });
   // Create a file path in the destination directory.
   const filePath = path.resolve(publicDirPath, 'index.html');
 
   // Save the file in the desired location.
+  // this should always get updated
   await fs.writeFile(filePath, fileData, 'utf-8');
 };
 
-/**
-* buildStatic injects a template body into the base .njk and outputs to file
-*/
-const buildStatic = async (staticFiles, outputPath) => {
-  // console.log(`in ${staticFileDir} out ${outputPath}`)
-  // const fileNames = await getFiles(staticFileDir, '.njk');
-  for (let s of staticFiles) {
-    // const fileSlug = s.slice(0,-4);
-    // console.log(`slug ${s} ${fileSlug}`)
-    await writeFileFromTemplate('templates', s, outputPath);
-    console.log(`wrote ${s} to folder`)
-  }
-}
-// build runs the static site generator.
 const build = async () => {
+  console.log(`starting blog generation...`)
   // Ensure the public directory exists.
   await fs.mkdir(publicDirPath, { recursive: true });
+
   // Delete any previously-generated HTML files in the public directory.
-  await removeFiles(publicDirPath, '.html');
+  console.log(`removing previous HTML files...`)
 
-  await buildStatic(staticFiles, publicDirPath);
-  // Get all the Markdown files in the posts directory.
-  const posts = await getPosts(postsDirPath);
-  // const projects = await getPosts(projectsDirPath);
-  // Generate pages for all posts that are public.
-  const postsToCreate = posts
-    .filter(post => Boolean(post.public))
-    .map(post => createPostFile(post, publicPostsDirPath));
+  const removeAll = (process.argv[2] === 'flush') ? true: false; // send arg
+  console.log(`remove All?: ${removeAll}`);
 
-  const createdPosts = await Promise.all(postsToCreate);
+  await removeFiles(publicDirPath, '.html', removeAll);
 
-  // Generate a page with a list of posts.
-  await createIndexFile(
-    // Sort created posts by publish date (newest first).
-    createdPosts.sort((a, b) => new Date(b.date) - new Date(a.date))
-  );
+  // Get all the Markdown files in the content directory.
+  console.log(`fetching markdown content...`)
+  const content = await getContent(contentDirPath);
 
-  return createdPosts;
-};
+  // write content to file
+  const createdContent = await Promise.all(content
+    .filter(c => Boolean(c.public))
+    .map(c => createContentFile(c, publicDirPath, 'template')));
+
+    await createIndexFile(
+      // Sort created content by publish date (newest first).
+      createdContent.sort((a, b) => new Date(b.date) - new Date(a.date))
+    );
+
+  await fs.writeFile('hash.js', 'export default ');
+  await fs.appendFile('hash.js', JSON.stringify(currHashDict));
+
+  return createdContent;
+}
 
 build()
   .then(created =>
-    console.log(`Build successful. Generated ${created.length} post(s).`)
+    console.log(`Build successful. Generated ${created.length} items(s).`)
   )
   .catch(err => console.error(err));

@@ -3,6 +3,7 @@ title: "Self-Hosting Plausible Analytics "
 description: "Why it's worth it to save $1"
 date: "2021-07-12"
 public: true
+type: post
 ---
 
 ### Why Plausible for website analytics?  

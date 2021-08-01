@@ -3,6 +3,7 @@ title: "Why this blog > my CS degree"
 description: "Why I made this blog"
 date: "2021-07-10"
 public: true
+type: post
 ---
 ### My learning is broken
 There's a million ways to put content on the Internet. I've personally worked with React, Next.js, Django, Boostrap, vanilla HTML + CSS, and been scared off by Angular and Vue. Although these frameworks help people put stuff on the Internet quickly and easily, they don't help people *understand* the Internet. When a framework is working, it makes my life wayyy easier. When it breaks, it's harder to debug because *I don't know how it works in the first place*.

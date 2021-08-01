@@ -1,42 +1,33 @@
 {
-  "name": "static-site-generator",
+  "name": "cha0sg0d.github.io",
   "version": "1.0.0",
-  "description": "Build your own static site generator (because why not?)",
+  "description": "Build your own static site generator (because why not?) tony's website",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "build": "node .",
-    "start": "serve ./public",
-    "fmt": "npx prettier --single-quote --write '**/*.js'"
-  },
-  "keywords": [
-    "static",
-    "site",
-    "generator",
-    "blog",
-    "post",
-    "izolate"
-  ],
-  "author": "izolate <izolate@gmail.com>",
-  "license": "Unlicense",
-  "dependencies": {
-    "front-matter": "^3.0.2",
-    "nunjucks": "^3.2.0",
-    "remark": "^10.0.1",
-    "remark-highlight.js": "^5.1.0",
-    "remark-html": "^9.0.0",
-    "remark-slug": "^5.1.1"
-  },
-  "devDependencies": {
-    "eslint": "^7.30.0",
-    "prettier": "^1.17.1",
-    "serve": "^11.3.2"
+    "lint": "eslint",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/izolate/static-site-generator.git"
+    "url": "git+https://github.com/cha0sg0d/cha0sg0d.github.io.git"
   },
+  "author": "",
+  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/izolate/static-site-generator/issues"
+    "url": "https://github.com/cha0sg0d/cha0sg0d.github.io/issues"
   },
-  "homepage": "https://github.com/izolate/static-site-generator#readme"
+  "homepage": "https://github.com/cha0sg0d/cha0sg0d.github.io#readme",
+  "dependencies": {
+    "shelljs": "^0.8.4"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "front-matter": "^4.0.2",
+    "nunjucks": "^3.2.3",
+    "remark": "^13.0.0",
+    "remark-highlight.js": "^6.0.0",
+    "remark-html": "^13.0.1",
+    "remark-slug": "^6.1.0"
+  }
 }
