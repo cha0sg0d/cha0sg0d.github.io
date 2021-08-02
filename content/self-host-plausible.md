@@ -30,7 +30,8 @@ The Plausible team has an [example repository](https://github.com/plausible/host
   In Docker terminology, an *image* is the steps required to create a specific docker container and a *container* is when you actually run the image. The image is defined by something called a Dockerfile, which is a text file that specifies the image configuration.
 
 </details>
-&nbsp;  
+
+
 <details>
   <summary>What is Docker Compose?</summary>  
 
@@ -41,7 +42,6 @@ The Plausible team has an [example repository](https://github.com/plausible/host
   A Docker Compose file tells Docker which containers to create and governs how the containers will interact with each other. Most web applications need multiple containers, so Docker Compose is a common tool.
 
 </details>  
-&nbsp;
 
 1. Follow steps 1, 2, and 3 from Plausible's self-hosting [docs](https://plausible.io/docs/self-hosting). Pause when you get to this line:  
 >You can now navigate to http://{hostname}:8000 and see the login screen.
@@ -82,10 +82,10 @@ The Plausible team has an [example repository](https://github.com/plausible/host
     ## SMTP (Simple Mail Transfer Protocol)
     SMTP is an internet standard communication protocol for electronic mail transmission.  Simply put, SMTP sets a standard for how computers that send e-mail should talk to each other. Mail servers typically run SMTP.
 
-  </details>
-  &nbsp;
+  </details>  
 
-    To solve this issue, I examined the Docker image for [`bytemark/smtp`](https://github.com/BytemarkHosting/docker-smtp), the mail server Plausible uses.
+
+  To solve this issue, I examined the Docker image for [`bytemark/smtp`](https://github.com/BytemarkHosting/docker-smtp), the mail server Plausible uses.
 
     The following configuration in the `hosting/docker-compose` file solved my issue:
 
@@ -119,8 +119,8 @@ The Plausible team has an [example repository](https://github.com/plausible/host
 
   Good news! For $5/month, Digital Ocean, a cloud service provider, let's me run software on one of their servers.
 
-</details>
-&nbsp;
+</details>  
+
 
 1. Get a Digital Ocean [account](https://www.digitalocean.com/?refcode=d2a3afe52625&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=CopyPaste)
 2. Set up a [basic Droplet](https://docs.digitalocean.com/products/droplets/) at the cheapest level ($5/month)
@@ -157,10 +157,9 @@ The Plausible team has an [example repository](https://github.com/plausible/host
       SSH relies on multiple cryptographic techniques, including symmetric encryption, asymmetric encryption, and hashing. This provides guarantees about the security of the connection to the remote server.
 
   </details>  
-  &nbsp;
 
 
-4. Send the `plausible/hosting` repo to the Droplet via `scp` (secure copy):
+  4. Send the `plausible/hosting` repo to the Droplet via `scp` (secure copy):
 
     `scp -r /hosting root@DROPLET_ID_ADDRESS:/hosting`
 
@@ -215,7 +214,6 @@ The Plausible team has an [example repository](https://github.com/plausible/host
 This layer, **HTTP + S(ecure), is called HTTPS!**
 
 </details>  
-&nbsp;
 
 1. Get a website name. Right now, my Plausible instance is hosted at the IP address `DROPLET_ID_ADDRESS:8000`. This is a problem because
 > One of the main functions of SSL is to prove to the user that they are really connecting to the site they requested, and not to an attacker masquerading as the end site. Without linking the domain name to the certificate this would not be possible
@@ -249,8 +247,7 @@ This layer, **HTTP + S(ecure), is called HTTPS!**
     Read this fantastic [tutorial](https://www.freecodecamp.org/news/docker-nginx-letsencrypt-easy-secure-reverse-proxy-40165ba3aee2/):
 
     A reverse proxy allows you to direct all incoming traffic to your server. We want all requests for `plausible.on` to be secured with HTTPS.
-  </details>
-  &nbsp;  
+  </details>  
 
   1. Follow the steps listed in this fantastic self-hosting [tutorial](https://theselfhostingblog.com/posts/completely-self-hosting-plausible-io-a-privacy-friendly-alternative-to-google-analytics/#configuring-nginx):
 

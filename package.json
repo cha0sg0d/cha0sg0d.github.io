@@ -24,6 +24,7 @@
   "devDependencies": {
     "eslint": "^7.32.0",
     "front-matter": "^4.0.2",
+    "glob": "^7.1.7",
     "nunjucks": "^3.2.3",
     "pluralize": "^8.0.0",
     "remark": "^13.0.0",

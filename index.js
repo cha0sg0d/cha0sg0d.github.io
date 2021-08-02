@@ -12,6 +12,9 @@ import remarkHTML from 'remark-html';
 import remarkSlug from 'remark-slug';
 import remarkHighlight from 'remark-highlight.js';
 import pluralize from 'pluralize';
+import util from 'util';
+import glob from 'glob';
+const promiseGlob = util.promisify(glob);
 
 // copy of hashDict to modify
 let currHashDict = JSON.parse(JSON.stringify(hashDict))
@@ -63,20 +66,8 @@ const hashFile = (filePath) => {
 
 // Get files in dirPath with optional fileExt
 const getFiles = async (dirPath, fileExt = '') => {
-  // List all the entries in the directory.
-  const dirContents = await fs.readdir(dirPath, { withFileTypes: true });
-
-  return (
-    dirContents
-      // Omit any sub-directories.
-      .filter(dirContent => dirContent.isFile())
-      // Ensure the file extension matches a given extension (optional).
-      .filter(dirContent =>
-        fileExt.length ? dirContent.name.toLowerCase().endsWith(fileExt) : true
-      )
-      // Return a list of file names.
-      .map(dirContent => dirContent.name)
-  );
+  const fileList = await promiseGlob(`**/*.${fileExt}`,{cwd: dirPath})
+  return fileList
 };
 
 // removeFiles deletes all files in a directory that match a file extension.
@@ -125,7 +116,7 @@ const parseMarkdown = (fileName, fileData) => {
 // reads the Markdown files in dirPath and parses to dict
 const getContent = async (dirPath) => {
   // Get a list of all Markdown files in the directory.
-  const fileNames = await getFiles(dirPath, '.md');
+  const fileNames = await getFiles(dirPath, 'md');
 
   // Create a list of files to read.
   const filesRead = fileNames.map(fileName =>
